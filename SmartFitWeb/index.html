@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartFit — AI Health & Lifestyle Planner</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* ── Hero ── */
+#threeBg {
+  position: fixed; top:0; left:0;
+  width:100%; height:100%;
+  z-index:-1; pointer-events:none;
+}
+.hero {
+  min-height: 88vh;
+  display: flex;
+  align-items: center;
+  padding: var(--space-xl) 0;
+  overflow: hidden;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--space-xl);
+  align-items: center;
+}
+.hero h1 {
+  background: linear-gradient(135deg, var(--forest-dark), var(--forest-mid), var(--turmeric));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--space-sm);
+}
+.hero-sub { font-size:1.1rem; max-width:480px; margin-bottom:var(--space-lg); }
+.hero-actions { display:flex; gap:var(--space-sm); flex-wrap:wrap; margin-bottom:var(--space-lg); }
+.hero-trust { display:flex; gap:var(--space-lg); flex-wrap:wrap; }
+.trust-item { display:flex; flex-direction:column; }
+.trust-item .num { font-family:var(--font-mono); font-size:1.5rem; font-weight:700; color:var(--forest-dark); }
+.trust-item span:last-child { font-size:.78rem; opacity:.65; }
+
+/* Thali ring */
+.thali-ring { position:relative; width:300px; height:300px; margin:0 auto; }
+.thali-svg { width:100%; height:100%; transform:rotate(-90deg); }
+.seg { animation: fillIn 1.4s ease forwards; opacity:0; }
+.seg-1 { animation-delay:.1s; }
+.seg-2 { animation-delay:.3s; }
+.seg-3 { animation-delay:.5s; }
+.seg-4 { animation-delay:.7s; }
+@keyframes fillIn {
+  from { opacity:0; }
+  to   { opacity:1; }
+}
+.thali-center {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+}
+.thali-cal { font-family:var(--font-mono); font-size:2rem; font-weight:700; color:var(--forest-dark); }
+.thali-lbl { font-size:.75rem; opacity:.6; }
+.thali-tag {
+  position:absolute;
+  font-family:var(--font-mono);
+  font-size:.68rem; font-weight:700;
+  background:var(--white);
+  padding:.25rem .6rem;
+  border-radius:99px;
+  box-shadow:var(--shadow-soft);
+  white-space:nowrap;
+}
+.tag-1 { top:0;   left:50%; transform:translateX(-50%); color:var(--forest-dark); }
+.tag-2 { top:45%; right:-5px; color:var(--turmeric); }
+.tag-3 { bottom:5%; right:15%; color:var(--coral); }
+.tag-4 { bottom:20%; left:-10px; color:var(--forest-light); }
+
+/* How section */
+.how { background:var(--cream-deep); }
+.section-head { text-align:center; max-width:580px; margin:0 auto var(--space-xl); }
+.section-head h2 { margin:.5rem 0; }
+.card-icon { width:48px; height:48px; border-radius:var(--radius-md); background:var(--cream-deep); display:flex; align-items:center; justify-content:center; font-size:1.4rem; margin-bottom:var(--space-sm); }
+
+/* Features */
+.feature-list { border-top:1px solid rgba(27,67,50,.1); }
+.feature-row {
+  display:grid;
+  grid-template-columns:60px 1fr 30px;
+  align-items:center;
+  gap:var(--space-md);
+  padding:var(--space-md) var(--space-sm);
+  border-bottom:1px solid rgba(27,67,50,.1);
+  text-decoration:none;
+  transition:background .2s, padding-left .2s;
+}
+.feature-row:hover { background:rgba(255,255,255,.6); padding-left:var(--space-md); }
+.feature-num { font-family:var(--font-mono); font-size:1rem; color:var(--turmeric); font-weight:700; }
+.feature-info h3 { margin-bottom:.2rem; }
+.feature-info p   { font-size:.88rem; opacity:.7; }
+.feature-arrow    { font-size:1.2rem; color:var(--forest-dark); transition:transform .2s; }
+.feature-row:hover .feature-arrow { transform:translateX(4px); }
+
+/* CTA band */
+.cta-band { background:var(--forest-dark); }
+.cta-inner { text-align:center; }
+.cta-inner h2 { color:var(--cream); }
+.cta-inner p  { color:var(--cream); opacity:.8; margin:var(--space-sm) 0 var(--space-lg); }
+
+@media(max-width:900px) {
+  .hero-grid { grid-template-columns:1fr; }
+  .hero-visual { order:-1; margin-bottom:var(--space-md); }
+  .thali-ring { width:240px; height:240px; }
+}
+</style>
+</head>
+<body data-page="home">
+
+<div id="threeBg" aria-hidden="true"></div>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo"><span class="logo-mark">🌿</span> SmartFit</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="profile.html">Get Started</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="diet.html">Diet Plan</a></li>
+      <li><a href="workout.html">Workout</a></li>
+      <li><a href="grocery.html">Grocery</a></li>
+      <li><a href="skincare.html">Skin &amp; Hair</a></li>
+    </ul>
+    <a href="profile.html" class="btn btn-primary btn-sm">Start Free</a>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">Diet · Workout · Budget · Grooming</p>
+      <h1>Your whole day,<br>planned like a thali.</h1>
+      <p class="hero-sub">SmartFit builds your breakfast, lunch, dinner, workout and grocery list around your body, region, and budget — personalised every day.</p>
+      <div class="hero-actions">
+        <a href="profile.html" class="btn btn-primary">🚀 Build My Free Plan</a>
+        <a href="#how" class="btn btn-secondary">See How It Works</a>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-item"><span class="num">180+</span><span>Regional foods</span></div>
+        <div class="trust-item"><span class="num">60+</span><span>Workouts &amp; Yoga</span></div>
+        <div class="trust-item"><span class="num">₹0</span><span>To get started</span></div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="thali-ring">
+        <svg viewBox="0 0 300 300" class="thali-svg">
+          <circle cx="150" cy="150" r="130" fill="none" stroke="#F4EFD9" stroke-width="36"/>
+          <circle class="seg seg-1" cx="150" cy="150" r="130" fill="none" stroke="#1B4332" stroke-width="36" stroke-dasharray="180 600" stroke-dashoffset="0" stroke-linecap="round"/>
+          <circle class="seg seg-2" cx="150" cy="150" r="130" fill="none" stroke="#D4A373" stroke-width="36" stroke-dasharray="220 600" stroke-dashoffset="-185" stroke-linecap="round"/>
+          <circle class="seg seg-3" cx="150" cy="150" r="130" fill="none" stroke="#E76F51" stroke-width="36" stroke-dasharray="90 600" stroke-dashoffset="-410" stroke-linecap="round"/>
+          <circle class="seg seg-4" cx="150" cy="150" r="130" fill="none" stroke="#74A892" stroke-width="36" stroke-dasharray="130 600" stroke-dashoffset="-505" stroke-linecap="round"/>
+        </svg>
+        <div class="thali-center">
+          <div class="thali-cal" id="heroCal">1,650</div>
+          <div class="thali-lbl">kcal today</div>
+        </div>
+        <div class="thali-tag tag-1">Breakfast</div>
+        <div class="thali-tag tag-2">Lunch</div>
+        <div class="thali-tag tag-3">Snack</div>
+        <div class="thali-tag tag-4">Dinner</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- HOW -->
+<section id="how" class="how">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Why SmartFit</p>
+      <h2>Generic apps assume you can afford avocados.</h2>
+      <p>SmartFit asks what's in your kitchen, your region, and your wallet — then plans around that.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon">🍽️</div>
+        <h3>Region-aware meals</h3>
+        <p>Maharashtra, North or South Indian options. What's available near you.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">💸</div>
+        <h3>Budget-first planning</h3>
+        <p>Low, medium or high budget. Every meal and grocery list adjusts to what you can spend.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏥</div>
+        <h3>Health condition aware</h3>
+        <p>Iron deficiency, PCOS, Diabetes, Thyroid — diet automatically adjusts for your condition.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section style="background:var(--cream)">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Everything In One Place</p>
+      <h2>6 complete modules. One daily plan.</h2>
+    </div>
+    <div class="feature-list">
+      <a href="diet.html"     class="feature-row"><div class="feature-num">01</div><div class="feature-info"><h3>Diet Recommendation</h3><p>Breakfast to dinner built from your BMI, goal, mood and health condition.</p></div><div class="feature-arrow">→</div></a>
+      <a href="workout.html"  class="feature-row"><div class="feature-num">02</div><div class="feature-info"><h3>Workout &amp; Yoga Plans</h3><p>1-hour sessions for Beginner to Advanced — strength or yoga with timer.</p></div><div class="feature-arrow">→</div></a>
+      <a href="grocery.html"  class="feature-row"><div class="feature-num">03</div><div class="feature-info"><h3>Smart Grocery List</h3><p>Auto-generated from your diet plan with regional prices and cost total.</p></div><div class="feature-arrow">→</div></a>
+      <a href="dashboard.html" class="feature-row"><div class="feature-num">04</div><div class="feature-info"><h3>Progress Tracker</h3><p>Weight, BMI, steps and consistency tracked over time with charts.</p></div><div class="feature-arrow">→</div></a>
+      <a href="skincare.html" class="feature-row"><div class="feature-num">05</div><div class="feature-info"><h3>Skin &amp; Hair Care</h3><p>Morning and night routines by skin type and budget — products or home remedies.</p></div><div class="feature-arrow">→</div></a>
+      <a href="dashboard.html" class="feature-row"><div class="feature-num">06</div><div class="feature-info"><h3>Water &amp; Sleep Tracker</h3><p>Daily water targets and sleep quality feedback tied to your goal.</p></div><div class="feature-arrow">→</div></a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-band">
+  <div class="container cta-inner">
+    <h2>Build your complete plan in 2 minutes.</h2>
+    <p>No credit card. No app download. No account needed.</p>
+    <a href="profile.html" class="btn btn-accent" style="font-size:1.05rem;padding:1rem 2rem">
+      🚀 Get My Free Plan
+    </a>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="js/smartfit-data.js"></script>
+<script src="js/main.js"></script>
+<script>
+// Update thali with actual user calories if profile exists
+const p = SmartFit.loadProfile();
+if (p) {
+  const a = SmartFit.getAnalysis(p);
+  document.getElementById('heroCal').textContent = a.calories.toLocaleString();
+}
+
+// Three.js particle background
+(function() {
+  const container = document.getElementById('threeBg');
+  if (!container || typeof THREE === 'undefined') return;
+  const scene    = new THREE.Scene();
+  const camera   = new THREE.PerspectiveCamera(60, container.clientWidth/container.clientHeight, 0.1, 1000);
+  camera.position.z = 30;
+  const renderer = new THREE.WebGLRenderer({ alpha:true, antialias:true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  container.appendChild(renderer.domElement);
+
+  const geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(120 * 3);
+  for (let i = 0; i < 120; i++) {
+    pos[i*3]   = (Math.random()-.5)*80;
+    pos[i*3+1] = (Math.random()-.5)*60;
+    pos[i*3+2] = (Math.random()-.5)*40;
+  }
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+
+  const cv = document.createElement('canvas'); cv.width=32; cv.height=32;
+  const cx = cv.getContext('2d');
+  const grd = cx.createRadialGradient(16,16,0,16,16,16);
+  grd.addColorStop(0,'rgba(212,163,115,1)');
+  grd.addColorStop(1,'rgba(212,163,115,0)');
+  cx.fillStyle=grd; cx.fillRect(0,0,32,32);
+
+  const mat = new THREE.PointsMaterial({ size:.8, map:new THREE.CanvasTexture(cv), transparent:true, depthWrite:false, blending:THREE.AdditiveBlending, opacity:.7 });
+  const pts = new THREE.Points(geo, mat);
+  scene.add(pts);
+
+  // Floating shapes
+  const shapes = [];
+  const sg = new THREE.IcosahedronGeometry(.4, 0);
+  const sm = new THREE.MeshBasicMaterial({ color:0x2D6A4F, wireframe:true, opacity:.2, transparent:true });
+  for (let i=0; i<10; i++) {
+    const m = new THREE.Mesh(sg, sm);
+    m.position.set((Math.random()-.5)*60,(Math.random()-.5)*40,(Math.random()-.5)*20);
+    m.userData = { rx:(Math.random()-.5)*.01, ry:(Math.random()-.5)*.01, fs:Math.random()*.001+.0003, fo:Math.random()*Math.PI*2 };
+    scene.add(m); shapes.push(m);
+  }
+
+  let mx=0, my=0, t=0;
+  document.addEventListener('mousemove', e => { mx=(e.clientX/innerWidth-.5)*.3; my=(e.clientY/innerHeight-.5)*.3; });
+
+  function animate() {
+    requestAnimationFrame(animate); t+=.005;
+    pts.rotation.y+=.0008; pts.rotation.x+=.0003;
+    shapes.forEach(m => { m.rotation.x+=m.userData.rx; m.rotation.y+=m.userData.ry; m.position.y+=Math.sin(t+m.userData.fo)*m.userData.fs; });
+    camera.position.x+=(mx*8-camera.position.x)*.05;
+    camera.position.y+=(-my*5-camera.position.y)*.05;
+    camera.lookAt(scene.position);
+    renderer.render(scene, camera);
+  }
+  animate();
+  window.addEventListener('resize', () => {
+    camera.aspect = container.clientWidth/container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  });
+})();
+</script>
+</body>
+</html>

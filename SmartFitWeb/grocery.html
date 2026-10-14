@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Grocery — SmartFit</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.grocery-header {
+  background: linear-gradient(135deg, var(--forest-dark), var(--forest-mid));
+  padding: var(--space-lg) 0;
+  color: var(--cream);
+}
+.grocery-header h1 { color:var(--cream); }
+.grocery-header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+.cost-chip {
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: var(--radius-md);
+  padding: .8rem 1.3rem;
+  text-align: center;
+}
+.cost-label { font-size:.72rem; opacity:.7; color:var(--cream); display:block; }
+.cost-value { font-family:var(--font-mono); font-size:2rem; font-weight:700; color:var(--turmeric-light); display:block; }
+.cost-badge { margin-top:.3rem; }
+
+.summary-strip {
+  background: var(--cream-deep);
+  padding: var(--space-md) 0;
+}
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-sm);
+}
+.summary-box {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: .9rem 1rem;
+  box-shadow: var(--shadow-soft);
+}
+.summary-box .lbl { font-size: .7rem; opacity: .6; text-transform: uppercase; letter-spacing: .05em; }
+.summary-box .val { font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem; color: var(--forest-dark); margin-top: .2rem; }
+.summary-box .val.over { color: var(--coral); }
+
+.progress-wrap { margin-top: var(--space-sm); }
+.progress-track { height: 10px; background: var(--cream-deep); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--forest-dark); border-radius: 99px; transition: width .4s ease; }
+.progress-text { font-size: .82rem; font-weight: 600; color: var(--forest-mid); margin-top: .4rem; }
+.progress-complete { background: #D8F3DC; color: var(--forest-dark); border-radius: var(--radius-sm); padding: .6rem; text-align: center; font-weight: 700; margin-top: .6rem; }
+
+.grocery-toolbar {
+  background: var(--cream-deep);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid rgba(27,67,50,.08);
+}
+.toolbar-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+.purchased-info {
+  margin-left: auto;
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--forest-mid);
+}
+
+.grocery-main { padding: var(--space-lg) 0 var(--space-2xl); }
+.grocery-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.grocery-cat {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-soft);
+}
+.grocery-cat h3 {
+  font-size: 1rem;
+  margin-bottom: var(--space-sm);
+  padding-bottom: .5rem;
+  border-bottom: 2px solid var(--cream-deep);
+}
+.item-list { list-style: none; }
+.grocery-item {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  padding: .55rem 0;
+  border-bottom: 1px solid var(--cream-deep);
+  transition: opacity .2s;
+}
+.grocery-item:last-child { border-bottom: none; }
+.grocery-item input[type="checkbox"] {
+  width: 17px; height: 17px;
+  accent-color: var(--forest-dark);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.grocery-item.checked label { text-decoration: line-through; opacity: .45; }
+.grocery-item label {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  gap: .5rem;
+}
+.item-name { font-weight: 600; font-size: .88rem; }
+.item-qty  { font-size: .78rem; opacity: .55; white-space: nowrap; }
+.item-cost { font-family: var(--font-mono); font-size: .82rem; color: var(--forest-mid); white-space: nowrap; }
+
+.pantry-card {
+  grid-column: span 2;
+  background: var(--turmeric-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+}
+.pantry-card h3 { margin-bottom: .4rem; }
+.pantry-card p  { font-size: .88rem; margin-bottom: var(--space-sm); }
+.pantry-list { list-style:none; display:flex; flex-wrap:wrap; gap:.4rem; }
+.pantry-list li {
+  background: var(--white);
+  padding: .28rem .75rem;
+  border-radius: 99px;
+  font-size: .78rem;
+  font-weight: 600;
+}
+
+.empty-state {
+  grid-column: span 2;
+  text-align: center;
+  padding: var(--space-xl);
+  opacity: .5;
+}
+
+.estimate-note {
+  font-size: .76rem;
+  opacity: .55;
+  margin-top: var(--space-sm);
+}
+
+@media(max-width:900px) {
+  .summary-grid { grid-template-columns: 1fr 1fr; }
+}
+@media(max-width:768px) {
+  .grocery-grid { grid-template-columns:1fr; }
+  .pantry-card  { grid-column:span 1; }
+}
+</style>
+</head>
+<body data-page="grocery">
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo"><span class="logo-mark">🌿</span> SmartFit</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="diet.html">Diet Plan</a></li>
+      <li><a href="workout.html">Workout</a></li>
+      <li><a href="grocery.html" class="active">Grocery</a></li>
+      <li><a href="skincare.html">Skin &amp; Hair</a></li>
+    </ul>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+  </div>
+</nav>
+
+<!-- Header -->
+<header class="grocery-header">
+  <div class="container grocery-header-inner">
+    <div>
+      <p class="eyebrow" style="color:var(--turmeric-light)">Generated from your full 7-day diet plan</p>
+      <h1>Weekly Grocery Plan</h1>
+      <p style="color:var(--cream);opacity:.75;margin-top:.3rem" id="groceryMeta">Loading...</p>
+    </div>
+    <div class="cost-chip">
+      <span class="cost-label">Estimated Weekly Cost</span>
+      <span class="cost-value" id="totalCost">₹0</span>
+      <div class="cost-badge"><span class="badge badge-low" id="budgetBadge">—</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- Profile summary + budget status -->
+<section class="summary-strip">
+  <div class="container">
+    <div class="summary-grid">
+      <div class="summary-box"><div class="lbl">Goal</div><div class="val" id="sumGoal">—</div></div>
+      <div class="summary-box"><div class="lbl">Region</div><div class="val" id="sumRegion">—</div></div>
+      <div class="summary-box"><div class="lbl">Weekly Budget (approx.)</div><div class="val" id="sumBudget">—</div></div>
+      <div class="summary-box"><div class="lbl" id="sumStatusLbl">Remaining</div><div class="val" id="sumStatus">—</div></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
+      <p class="progress-text" id="progressText">0 / 0 items purchased</p>
+      <div class="progress-complete" id="progressComplete" style="display:none">🎉 Weekly grocery shopping completed!</div>
+    </div>
+  </div>
+</section>
+
+<!-- Toolbar -->
+<div class="grocery-toolbar">
+  <div class="container toolbar-inner">
+    <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ Print List</button>
+    <button class="btn btn-secondary btn-sm" onclick="copyList()">📋 Copy List</button>
+    <button class="btn btn-primary btn-sm" onclick="regenerate()">🔄 Regenerate Weekly Grocery</button>
+  </div>
+</div>
+
+<!-- Main content -->
+<section class="grocery-main">
+  <div class="container">
+    <div class="grocery-grid" id="groceryGrid">
+      <div class="empty-state">
+        <p style="font-size:1.2rem">🛒</p>
+        <p>Loading your weekly grocery list...</p>
+      </div>
+    </div>
+    <p class="estimate-note">Prices are approximate, manually-estimated figures — not live market prices. Your actual cost will vary by store and season.</p>
+  </div>
+</section>
+
+<script src="js/smartfit-data.js"></script>
+<script src="js/main.js"></script>
+<script>
+const CAT_ICONS = {
+  'Grains & Staples':'🌾', 'Pulses & Dal':'🫘', 'Vegetables':'🥬',
+  'Fruits':'🍎', 'Dairy / Alternatives':'🥛', 'Nuts & Seeds':'🥜',
+  'Spices':'🌶️', 'Other':'📦'
+};
+
+let currentGroceryList = null;
+
+document.addEventListener('DOMContentLoaded', buildWeeklyGrocery);
+
+function buildWeeklyGrocery() {
+  const profile = SmartFit.requireProfile();
+  if (!profile) return;
+
+  const analysis = SmartFit.getAnalysis(profile);
+  const groceryList = SmartFit.getWeeklyGroceryList(profile, analysis);
+  currentGroceryList = groceryList;
+
+  set('groceryMeta', groceryList.region + ' pricing · ' + (profile.budget || 'medium') + ' budget · ' + (profile.foodPreference || 'NonVeg') + ' · Week of ' + SmartFit._getWeekKey());
+  set('sumGoal', analysis.goal);
+  set('sumRegion', groceryList.region);
+  set('sumBudget', '₹' + groceryList.budgetStatus.weeklyBudget);
+
+  renderGrid(groceryList);
+  renderBudget(groceryList);
+  applyPurchasedState();
+}
+
+function renderGrid(groceryList) {
+  const grid = document.getElementById('groceryGrid');
+  grid.innerHTML = '';
+
+  const cats = Object.keys(groceryList.byCategory);
+  if (!cats.length) {
+    grid.innerHTML = '<div class="empty-state"><p style="font-size:1.2rem">🛒</p><p>No ingredients found for this week\'s plan yet. Try Regenerate.</p></div>';
+    set('totalCost', '₹0');
+    return;
+  }
+
+  cats.sort().forEach(cat => {
+    const catEl = document.createElement('div');
+    catEl.className = 'grocery-cat';
+    let html = `<h3>${CAT_ICONS[cat] || '📦'} ${cat}</h3><ul class="item-list">`;
+    groceryList.byCategory[cat].forEach(item => {
+      html += `
+        <li class="grocery-item" id="wrap_${item.id}">
+          <input type="checkbox" id="${item.id}" onchange="toggleItem('${item.id}')">
+          <label for="${item.id}">
+            <span class="item-name">${item.name}</span>
+            <span class="item-qty">${item.qtyDisplay}</span>
+          </label>
+          <span class="item-cost">~₹${item.cost}</span>
+        </li>`;
+    });
+    html += '</ul>';
+    catEl.innerHTML = html;
+    grid.appendChild(catEl);
+  });
+
+  const pantry = document.createElement('div');
+  pantry.className = 'pantry-card';
+  pantry.innerHTML = `
+    <h3>🏠 Check Your Pantry First</h3>
+    <p>You might already have these at home — save money before shopping:</p>
+    <ul class="pantry-list">
+      <li>Salt</li><li>Turmeric</li><li>Cumin</li><li>Mustard Seeds</li>
+      <li>Oil</li><li>Ghee</li><li>Onion</li><li>Garlic</li><li>Ginger</li>
+      <li>Sugar</li><li>Atta</li>
+    </ul>`;
+  grid.appendChild(pantry);
+
+  set('totalCost', '₹' + groceryList.grandTotal);
+}
+
+function renderBudget(groceryList) {
+  const b = groceryList.budgetStatus;
+  const badge = document.getElementById('budgetBadge');
+  const statusLbl = document.getElementById('sumStatusLbl');
+  const statusVal = document.getElementById('sumStatus');
+
+  if (b.status === 'within') {
+    badge.textContent = 'Within Budget';
+    badge.className = 'badge badge-low';
+    statusLbl.textContent = 'Remaining';
+    statusVal.textContent = '₹' + b.remaining;
+    statusVal.classList.remove('over');
+  } else {
+    badge.textContent = 'Over Budget';
+    badge.className = 'badge badge-high';
+    statusLbl.textContent = 'Over By';
+    statusVal.textContent = '₹' + b.remaining;
+    statusVal.classList.add('over');
+  }
+}
+
+function applyPurchasedState() {
+  const purchased = SmartFit.getGroceryPurchased();
+  document.querySelectorAll('.grocery-item input[type="checkbox"]').forEach(cb => {
+    if (purchased[cb.id]) {
+      cb.checked = true;
+      document.getElementById('wrap_' + cb.id)?.classList.add('checked');
+    }
+  });
+  updateProgress();
+}
+
+function toggleItem(id) {
+  const cb = document.getElementById(id);
+  const wrap = document.getElementById('wrap_' + id);
+  if (wrap) wrap.classList.toggle('checked', cb.checked);
+  SmartFit.setGroceryPurchased(id, cb.checked);
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = document.querySelectorAll('.grocery-item').length;
+  const checked = document.querySelectorAll('.grocery-item.checked').length;
+  const pct = total ? Math.round(checked / total * 100) : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+  set('progressText', checked + ' / ' + total + ' items purchased');
+  document.getElementById('progressComplete').style.display = (total > 0 && checked === total) ? 'block' : 'none';
+}
+
+function regenerate() {
+  const profile = SmartFit.requireProfile();
+  if (!profile) return;
+  const analysis = SmartFit.getAnalysis(profile);
+  currentGroceryList = SmartFit.regenerateWeeklyGrocery(profile, analysis);
+  renderGrid(currentGroceryList);
+  renderBudget(currentGroceryList);
+  applyPurchasedState();
+}
+
+function copyList() {
+  if (!currentGroceryList) return;
+  let text = 'SmartFit Weekly Grocery List\n\n';
+  Object.keys(currentGroceryList.byCategory).sort().forEach(cat => {
+    text += '-- ' + cat + ' --\n';
+    currentGroceryList.byCategory[cat].forEach(item => {
+      text += `• ${item.name} — ${item.qtyDisplay} (~₹${item.cost})\n`;
+    });
+    text += '\n';
+  });
+  text += 'Estimated total: ₹' + currentGroceryList.grandTotal;
+  navigator.clipboard.writeText(text)
+    .then(() => alert('✅ Weekly list copied to clipboard!'))
+    .catch(() => alert('Copy not supported on this browser.'));
+}
+
+function set(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+</script>
+</body>
+</html>

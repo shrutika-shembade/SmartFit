@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workout Plan — SmartFit</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* ── Workout Page ── */
+.workout-header {
+  background: linear-gradient(135deg, var(--forest-dark), var(--forest-mid));
+  padding: var(--space-lg) 0;
+  color: var(--cream);
+}
+.workout-header h1 { color: var(--cream); }
+.workout-header p  { color: var(--cream); opacity: .8; margin-top:.3rem; }
+
+.selector-section { padding: var(--space-md) 0; background: var(--cream-deep); }
+.selector-row {
+  display: flex;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.selector-group { display: flex; flex-direction: column; gap: .5rem; }
+.selector-label {
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  opacity: .6;
+}
+
+/* Timer card */
+.timer-section { padding: var(--space-md) 0; }
+.timer-card {
+  background: var(--forest-dark);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+  align-items: center;
+  color: var(--cream);
+}
+.timer-display { text-align: center; }
+.timer-ex-label { display: block; font-size: .8rem; opacity: .65; margin-bottom: .4rem; }
+.timer-clock {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 3.6rem;
+  font-weight: 700;
+  color: var(--turmeric-light);
+  line-height: 1;
+  margin-bottom: var(--space-sm);
+  transition: color .3s;
+}
+.timer-controls { display: flex; gap: .6rem; justify-content: center; }
+.timer-controls .btn { padding: .7rem 1.4rem; }
+.timer-controls .btn-secondary { color: var(--cream); border-color: var(--cream); }
+.timer-controls .btn-secondary:hover { background: var(--cream); color: var(--forest-dark); }
+
+.session-progress { display: flex; flex-direction: column; gap: .6rem; }
+.session-progress-label { font-size: .85rem; opacity: .7; }
+.progress-track { height: 10px; background: rgba(254,250,224,.15); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--turmeric); border-radius: 99px; transition: width .4s ease; }
+.session-progress-text { font-size: .85rem; opacity: .8; }
+
+@media(max-width:700px){ .timer-card { grid-template-columns: 1fr; } }
+
+/* Exercise list */
+.exercise-section { padding-bottom: var(--space-2xl); }
+.ex-block-title {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  font-weight: 700;
+  font-size: .95rem;
+  margin: var(--space-lg) 0 var(--space-sm);
+}
+.exercise-card {
+  display: grid;
+  grid-template-columns: 54px 1fr 70px;
+  gap: var(--space-sm);
+  align-items: start;
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-xs);
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+.exercise-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-card); }
+.exercise-card.active { border: 2px solid var(--forest-dark); }
+.exercise-card.warm   { background: var(--cream-deep); box-shadow: none; }
+.ex-icon {
+  width: 44px; height: 44px;
+  background: var(--cream-deep);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+}
+.exercise-card.active .ex-icon { background: var(--forest-dark); }
+.ex-info h4 { margin-bottom: .2rem; font-size: 1rem; }
+.ex-meta { font-size: .8rem; color: var(--forest-mid); font-weight: 600; margin-bottom: .3rem; }
+.ex-howto { margin-top: .5rem; }
+.ex-howto summary { cursor: pointer; font-size: .82rem; font-weight: 600; color: var(--forest-mid); }
+.ex-howto ol { margin: .5rem 0 .5rem 1.2rem; font-size: .85rem; opacity: .85; }
+.ex-howto li { margin-bottom: .25rem; }
+.ex-tip { font-size: .82rem; background: var(--cream-deep); padding: .4rem .8rem; border-radius: var(--radius-sm); }
+.ex-time { text-align: right; font-family: var(--font-mono); font-size: .88rem; color: var(--forest-dark); font-weight: 700; }
+
+@media(max-width:600px){
+  .exercise-card { grid-template-columns: 44px 1fr; }
+  .ex-time { grid-column: 2; text-align: left; }
+}
+</style>
+</head>
+<body data-page="workout">
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo"><span class="logo-mark">🌿</span> SmartFit</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="diet.html">Diet Plan</a></li>
+      <li><a href="workout.html">Workout</a></li>
+      <li><a href="grocery.html">Grocery</a></li>
+      <li><a href="skincare.html">Skin &amp; Hair</a></li>
+    </ul>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+  </div>
+</nav>
+
+<header class="workout-header">
+  <div class="container">
+    <p class="eyebrow" id="workoutDayLabel">Loading...</p>
+    <h1>Today's Workout</h1>
+    <p>60 minutes · Beginner · ~300 kcal</p>
+  </div>
+</header>
+
+<!-- Selector -->
+<section class="selector-section">
+  <div class="container">
+    <div class="selector-row">
+      <div class="selector-group">
+        <span class="selector-label">Workout Type</span>
+        <div class="radio-group">
+          <div class="radio-pill"><input type="radio" id="typeW" name="type" value="workout" checked><label for="typeW">💪 Workout</label></div>
+          <div class="radio-pill"><input type="radio" id="typeY" name="type" value="yoga"><label for="typeY">🧘 Yoga</label></div>
+        </div>
+      </div>
+      <div class="selector-group">
+        <span class="selector-label">Level</span>
+        <div class="radio-group">
+          <div class="radio-pill"><input type="radio" id="lvlB" name="level" value="Beginner" checked><label for="lvlB">Beginner</label></div>
+          <div class="radio-pill"><input type="radio" id="lvlI" name="level" value="Intermediate"><label for="lvlI">Intermediate</label></div>
+          <div class="radio-pill"><input type="radio" id="lvlA" name="level" value="Advanced"><label for="lvlA">Advanced</label></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Timer -->
+<section class="timer-section">
+  <div class="container">
+    <div class="timer-card">
+      <div class="timer-display">
+        <span class="timer-ex-label">Current Exercise</span>
+        <span id="currentExLabel" style="display:block;font-weight:600;margin-bottom:.4rem;color:var(--turmeric-light)">Click an exercise to select</span>
+        <span class="timer-clock" id="timerClock">00:30</span>
+        <div class="timer-controls">
+          <button class="btn btn-primary" id="timerStart">▶ Start</button>
+          <button class="btn btn-secondary" id="timerReset">↺ Reset</button>
+        </div>
+      </div>
+      <div class="session-progress">
+        <span class="session-progress-label">Session Progress</span>
+        <div class="progress-track">
+          <div class="progress-fill" id="sessionProgress" style="width:0%"></div>
+        </div>
+        <span class="session-progress-text" id="progressText">0 of 6 exercises</span>
+        <div style="margin-top:var(--space-sm);font-size:.82rem;opacity:.7">
+          <p>⏱ Warm Up: 5 min</p>
+          <p>💪 Main: 50 min</p>
+          <p>😌 Cool Down: 5 min</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Exercises -->
+<section class="exercise-section">
+  <div class="container">
+
+    <div class="ex-block-title">
+      <span class="badge badge-low">Warm Up</span> 5 minutes
+    </div>
+    <div class="exercise-card warm" data-seconds="60">
+      <div class="ex-icon">🌬️</div>
+      <div class="ex-info">
+        <h4>Anulom Vilom + Joint Rotations</h4>
+        <p>Alternate nostril breathing + gentle neck, shoulder &amp; knee rotations.</p>
+      </div>
+      <span class="ex-time">5:00</span>
+    </div>
+
+    <div class="ex-block-title">
+      <span class="badge badge-medium">Main Workout</span>&nbsp;<span id="mainWorkoutSubtitle">50 minutes · Click any exercise to set timer</span>
+    </div>
+
+    <div id="mainWorkoutList">
+      <p style="opacity:.5;text-align:center;padding:2rem">Loading your personalised workout...</p>
+    </div>
+
+    <div class="ex-block-title">
+      <span class="badge badge-high">Cool Down</span> 5 minutes
+    </div>
+    <div class="exercise-card warm" data-seconds="300">
+      <div class="ex-icon">😌</div>
+      <div class="ex-info">
+        <h4>Shavasana + Deep Breathing</h4>
+        <p>Seedha let jao. Poora body relax karo. 5 minute deep breathing.</p>
+      </div>
+      <span class="ex-time">5:00</span>
+    </div>
+
+    <!-- Session summary -->
+    <div style="background:var(--forest-dark);color:var(--cream);border-radius:var(--radius-md);padding:var(--space-md);margin-top:var(--space-lg)">
+      <h3 style="color:var(--cream);margin-bottom:var(--space-sm)">Session Summary</h3>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-sm)">
+        <div style="text-align:center">
+          <div style="font-family:var(--font-mono);font-size:1.6rem;color:var(--turmeric-light);font-weight:700">60</div>
+          <div style="font-size:.8rem;opacity:.7">Minutes</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:var(--font-mono);font-size:1.6rem;color:var(--turmeric-light);font-weight:700">~300</div>
+          <div style="font-size:.8rem;opacity:.7">Calories</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:var(--font-mono);font-size:1.6rem;color:var(--turmeric-light);font-weight:700">6</div>
+          <div style="font-size:.8rem;opacity:.7">Exercises</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Explore Exercises -->
+<section class="exercise-section" id="exploreSection" style="padding-top:0">
+  <div class="container">
+    <div class="explore-intro">
+      <span class="eyebrow">Exercise Library</span>
+      <h2>Explore Exercises</h2>
+    </div>
+
+    <div class="explore-search-wrap">
+      <input type="text" id="exploreSearch" class="explore-search" placeholder="Search exercises, e.g. plank, squats, cobra...">
+    </div>
+
+    <div class="explore-toolbar">
+      <span class="explore-heading" id="exploreHeading">Choose a workout category and discover exercises.</span>
+      <button type="button" class="explore-back-btn" id="exploreBackBtn">Back to Categories</button>
+    </div>
+
+    <div class="ee-cat-grid" id="exploreCategoryGrid"></div>
+
+    <div id="exploreResults" class="ee-result-grid" style="display:none"></div>
+
+    <div style="text-align:center">
+      <button type="button" class="explore-viewall-btn" id="exploreViewAll">View All Exercises</button>
+    </div>
+  </div>
+</section>
+
+<script src="js/smartfit-data.js"></script>
+<script src="js/main.js"></script>
+<script src="js/workout.js"></script>
+</body>
+</html>

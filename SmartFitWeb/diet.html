@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diet Plan — SmartFit</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* ── Diet Page ── */
+.diet-header {
+  background: linear-gradient(135deg, var(--forest-dark), var(--forest-mid));
+  padding: var(--space-lg) 0;
+  color: var(--cream);
+}
+.diet-header h1 { color:var(--cream); }
+.diet-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+.diet-badge {
+  background: rgba(255,255,255,.15);
+  color: var(--cream);
+  padding: .3rem .9rem;
+  border-radius: 99px;
+  font-size: .78rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+.regen-btn {
+  background: var(--turmeric);
+  color: var(--ink);
+  border: none;
+  padding: .6rem 1.3rem;
+  border-radius: 99px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: .88rem;
+  transition: transform .2s, background .2s;
+}
+.regen-btn:hover { transform: translateY(-2px); background: var(--turmeric-light); }
+
+/* Health alert */
+.health-alert {
+  background: #fff8e1;
+  border-left: 4px solid var(--turmeric);
+  border-radius: var(--radius-sm);
+  padding: .8rem 1rem;
+  margin: var(--space-md) 0;
+  font-size: .88rem;
+  font-weight: 600;
+}
+
+/* Timeline */
+.diet-timeline { padding: var(--space-lg) 0; }
+.timeline-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+.timeline-wrap::before {
+  content: '';
+  position: absolute;
+  left: 34px; top:0; bottom:0;
+  width: 2px;
+  background: rgba(27,67,50,.1);
+}
+
+/* Meal card */
+.meal-card {
+  display: grid;
+  grid-template-columns: 78px 1fr auto;
+  gap: var(--space-sm);
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-soft);
+  align-items: start;
+  transition: transform .22s, box-shadow .22s;
+  position: relative;
+}
+.meal-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card); }
+.meal-card.main  { border-left: 4px solid var(--forest-dark); }
+.meal-card.iron-food { border-left: 4px solid #c62828; }
+.meal-card.pcos-food { border-left: 4px solid #6a1b9a; }
+.meal-card.diabetes-food { border-left: 4px solid #2e7d32; }
+
+.time-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .4rem;
+  z-index: 1;
+}
+.time-bubble {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: var(--cream-deep);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+}
+.time-label { font-size: .65rem; font-weight: 700; color: var(--forest-mid); text-align: center; }
+
+.meal-body h3 { margin-bottom: .25rem; font-size: 1.05rem; }
+.meal-reason  { font-size: .8rem; opacity: .65; margin-bottom: .5rem; }
+
+.macro-row { display:flex; gap:.4rem; flex-wrap:wrap; }
+.macro-chip {
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  font-weight: 700;
+  padding: .18rem .55rem;
+  border-radius: 99px;
+}
+.mc-cal { background:#ffeee8; color:var(--coral); }
+.mc-pro { background:#e8f5e9; color:#2e7d32; }
+.mc-car { background:#fff8e1; color:#f57f17; }
+.mc-fat { background:#ede7f6; color:#4527a0; }
+
+.health-tag {
+  display: inline-block;
+  font-size: .68rem; font-weight:700;
+  padding: .18rem .55rem;
+  border-radius: 99px;
+  margin-top: .4rem;
+}
+.ht-iron     { background:#fce4ec; color:#c62828; }
+.ht-pcos     { background:#f3e5f5; color:#6a1b9a; }
+.ht-diabetes { background:#e8f5e9; color:#1b5e20; }
+.ht-hyper    { background:#e3f2fd; color:#0d47a1; }
+
+.alt-section { margin-top:.6rem; padding-top:.6rem; border-top:1px solid var(--cream-deep); }
+.alt-label { font-size:.72rem; opacity:.6; margin-bottom:.35rem; }
+.alt-chips { display:flex; gap:.35rem; flex-wrap:wrap; }
+.alt-chip {
+  background:var(--cream-deep); border:none;
+  border-radius:99px; padding:.28rem .7rem;
+  font-size:.72rem; font-weight:600;
+  cursor:pointer; transition:background .2s;
+  font-family:var(--font-body);
+}
+.alt-chip:hover { background:var(--turmeric-light); }
+
+.recipe-btn {
+  background:var(--forest-dark); color:var(--cream);
+  border:none; border-radius:var(--radius-sm);
+  padding:.45rem .8rem; font-size:.76rem;
+  font-weight:600; cursor:pointer;
+  font-family:var(--font-body);
+  white-space:nowrap; align-self:center;
+  transition:background .2s;
+}
+.recipe-btn:hover { background:var(--forest-mid); }
+
+/* Summary */
+.nutrition-summary { padding-bottom:var(--space-2xl); }
+.summary-card {
+  background:var(--forest-dark);
+  border-radius:var(--radius-lg);
+  padding:var(--space-lg);
+  color:var(--cream);
+}
+.summary-card h3 { color:var(--cream); margin-bottom:var(--space-md); }
+.summary-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:var(--space-md); }
+.sum-val { font-family:var(--font-mono); font-size:1.6rem; font-weight:700; color:var(--turmeric-light); }
+.sum-lbl { font-weight:600; margin-top:.2rem; }
+.sum-tgt { font-size:.72rem; opacity:.6; }
+.sum-note {
+  margin-top:var(--space-md); padding:var(--space-sm);
+  background:rgba(255,255,255,.08);
+  border-radius:var(--radius-sm); font-size:.88rem;
+}
+
+/* Modal */
+.modal-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.55); z-index:1000;
+  align-items:center; justify-content:center; padding:var(--space-sm);
+}
+.modal-overlay.open { display:flex; }
+.modal {
+  background:var(--white); border-radius:var(--radius-lg);
+  padding:var(--space-lg); max-width:500px; width:100%;
+  max-height:85vh; overflow-y:auto; position:relative;
+}
+.modal-close {
+  position:absolute; top:1rem; right:1rem;
+  background:var(--cream-deep); border:none;
+  border-radius:50%; width:30px; height:30px;
+  font-size:.9rem; cursor:pointer;
+}
+.recipe-meta { display:flex; gap:var(--space-sm); margin:.5rem 0 var(--space-sm); flex-wrap:wrap; }
+.recipe-meta-item { font-size:.78rem; font-weight:600; color:var(--forest-mid); }
+.recipe-steps { padding-left:1.1rem; }
+.recipe-steps li { padding:.35rem 0; font-size:.88rem; }
+.recipe-tip { background:var(--cream-deep); border-radius:var(--radius-sm); padding:.6rem .9rem; font-size:.84rem; margin-top:.6rem; }
+.yt-link {
+  display:inline-flex; align-items:center; gap:.4rem;
+  background:#ff0000; color:white;
+  padding:.5rem 1rem; border-radius:99px;
+  text-decoration:none; font-weight:600;
+  font-size:.82rem; margin-top:.6rem;
+}
+
+@media(max-width:700px) {
+  .meal-card { grid-template-columns:60px 1fr; }
+  .recipe-btn { grid-column:2; }
+  .summary-grid { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body data-page="diet">
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo"><span class="logo-mark">🌿</span> SmartFit</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="diet.html" class="active">Diet Plan</a></li>
+      <li><a href="workout.html">Workout</a></li>
+      <li><a href="grocery.html">Grocery</a></li>
+      <li><a href="skincare.html">Skin &amp; Hair</a></li>
+    </ul>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+  </div>
+</nav>
+
+<!-- Header -->
+<header class="diet-header">
+  <div class="container">
+    <p class="eyebrow" id="dietDate" style="color:var(--turmeric-light)">Today</p>
+    <h1>Your Diet Plan</h1>
+    <div class="diet-header-row">
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <span class="diet-badge" id="dietCalBadge">-- kcal target</span>
+        <span class="diet-badge" id="dietGoalBadge">-- goal</span>
+        <span class="diet-badge" id="dietPrefBadge">--</span>
+      </div>
+      <button class="regen-btn" onclick="regenerate()">🔄 New Plan</button>
+    </div>
+  </div>
+</header>
+
+<!-- Health alert -->
+<div class="container" id="healthAlertWrap"></div>
+
+<!-- Timeline -->
+<section class="diet-timeline">
+  <div class="container">
+    <div class="timeline-wrap" id="timeline">
+      <p style="opacity:.5;text-align:center;padding:2rem">Loading your personalised diet plan...</p>
+    </div>
+  </div>
+</section>
+
+<!-- Nutrition Summary -->
+<section class="nutrition-summary">
+  <div class="container">
+    <div class="summary-card">
+      <h3>Nutrition Summary</h3>
+      <div class="summary-grid">
+        <div><div class="sum-val" id="sumCal">--</div><div class="sum-lbl">Calories</div><div class="sum-tgt" id="sumCalTgt">--</div></div>
+        <div><div class="sum-val" id="sumPro">--</div><div class="sum-lbl">Protein</div><div class="sum-tgt" id="sumProTgt">--</div></div>
+        <div><div class="sum-val" id="sumCarb">--</div><div class="sum-lbl">Carbs</div><div class="sum-tgt" id="sumCarbTgt">--</div></div>
+        <div><div class="sum-val" id="sumFat">--</div><div class="sum-lbl">Fat</div><div class="sum-tgt" id="sumFatTgt">--</div></div>
+      </div>
+      <div class="sum-note" id="sumNote">Loading...</div>
+    </div>
+  </div>
+</section>
+
+<!-- Recipe Modal -->
+<div class="modal-overlay" id="recipeModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeRecipe()">✕</button>
+    <div id="recipeContent"></div>
+  </div>
+</div>
+
+<script src="js/smartfit-data.js"></script>
+<script src="js/main.js"></script>
+<script>
+const RECIPES = {
+  'Poha':            { time:'15 min', diff:'Easy', steps:['Rinse poha twice, soak 5 min','Heat oil, add mustard seeds','Add onion, sauté golden','Add turmeric + soaked poha','Mix, add salt, cover 3 min','Add lemon + peanuts before serving'], tip:'Do not over-soak — keep it light and fluffy.' },
+  'Dal Rice':        { time:'30 min', diff:'Easy', steps:['Wash dal and rice separately','Pressure cook dal with turmeric — 3 whistles','Cook rice separately','Heat oil: mustard, onion, tomato tadka','Mix tadka into dal','Serve dal over rice with ghee'], tip:'Adding ghee on top improves taste and adds healthy fat.' },
+  'Oats':            { time:'10 min', diff:'Easy', steps:['Bring milk to boil','Add oats, stir continuously','Cook 5 min on medium','Pour into bowl','Top with banana and honey'], tip:'Use rolled oats not instant for better nutrition.' },
+  'Sprouts':         { time:'5 min + 2 days', diff:'Easy', steps:['Soak moong dal overnight','Drain and tie in damp cloth','Keep 1-2 days until sprouts appear','Boil lightly 3 min (optional)','Mix with onion, tomato, lemon, salt'], tip:'Raw sprouts have more nutrition. Steam if digestion is weak.' },
+  'Khichdi':         { time:'25 min', diff:'Easy', steps:['Wash rice and dal together','Pressure cook with water, turmeric, salt — 3 whistles','Heat ghee, add cumin','Pour ghee over khichdi and mix'], tip:'Perfect comfort food — easy on stomach and nutritious.' },
+  'Moong Dal':       { time:'20 min', diff:'Easy', steps:['Wash moong dal thoroughly','Pressure cook with turmeric — 2 whistles','Heat oil, add cumin then onion','Add tomato and cook till soft','Mix into cooked dal, simmer 5 min'], tip:'Add lemon before serving — vitamin C helps iron absorption.' },
+  'Vegetable Soup':  { time:'20 min', diff:'Easy', steps:['Chop all vegetables','Heat oil, sauté onion and garlic','Add vegetables and water','Boil 10 min till soft','Blend partially or leave chunky','Season with salt and pepper'], tip:'Add ginger for extra immunity boost.' },
+  'Palak Paneer':    { time:'30 min', diff:'Medium', steps:['Blanch spinach 2 min, blend to puree','Sauté onion, garlic, tomato in oil','Add spinach puree, cook 5 min','Add paneer cubes','Add cream, salt, garam masala','Simmer 5 more min'], tip:'Best iron-rich meal. Add lemon for maximum iron absorption.' },
+  'Dal Khichdi':     { time:'25 min', diff:'Easy', steps:['Wash rice and moong dal','Pressure cook with water, turmeric — 3 whistles','Heat ghee, add cumin','Pour ghee tadka over khichdi'], tip:'Light dinner — perfect for weight loss.' },
+  'Jowar Bhakri':    { time:'20 min', diff:'Medium', steps:['Mix jowar flour with warm water','Knead into soft dough','Roll into circle by hand','Cook on tawa both sides','Toast on direct flame briefly'], tip:'Gluten free and high fiber — good for diabetes.' },
+  'Lemon Water':     { time:'2 min', diff:'Easy', steps:['Fill glass with water','Squeeze half lemon','Add pinch of salt (optional)','Add honey (optional)','Stir and drink on empty stomach'], tip:'Drink every morning before breakfast for best results.' },
+  'Beetroot Juice':  { time:'10 min', diff:'Easy', steps:['Peel and chop beetroot','Blend with little water','Strain if desired','Add lemon juice','Drink immediately'], tip:'Drink fresh — nutrition reduces if stored.' },
+  'Green Tea':       { time:'3 min', diff:'Easy', steps:['Boil water, let cool slightly to 80°C','Add green tea bag or leaves','Steep 2-3 min only','Remove bag, do not over-steep','Add honey if desired'], tip:'Never use boiling water — it makes green tea bitter.' },
+};
+
+const ICONS = { 'Morning Detox':'🌿','Pre Workout':'⚡','Breakfast':'🍳','Lunch':'🍛','Post Workout':'💪','Evening Snack':'🥗','Dinner':'🌙' };
+const MAIN_MEALS = ['Breakfast','Lunch','Dinner'];
+
+let profile, analysis, plan;
+
+document.addEventListener('DOMContentLoaded', function() {
+  profile  = SmartFit.requireProfile();
+  if (!profile) return;
+  analysis = SmartFit.getAnalysis(profile);
+  plan     = SmartFit.getTodayPlan(profile, analysis);
+  render();
+});
+
+function render() {
+  const h = (profile.healthIssue || '').toLowerCase();
+
+  // Header badges
+  set('dietDate',      SmartFit.getTodayDisplay());
+  set('dietCalBadge',  analysis.calories + ' kcal target');
+  set('dietGoalBadge', analysis.goal);
+  set('dietPrefBadge', profile.foodPreference || 'NonVeg');
+
+  // Health alerts
+  const alertWrap = document.getElementById('healthAlertWrap');
+  alertWrap.innerHTML = '';
+  const alerts = [];
+  if (h.includes('iron'))         alerts.push('🩸 Iron Deficiency — iron-rich foods like spinach, dates and sprouts have been prioritised.');
+  if (h.includes('pcos'))         alerts.push('🌸 PCOS — low-GI foods chosen, sugar minimised to help hormone balance.');
+  if (h.includes('diabetes'))     alerts.push('🩺 Diabetes — low glycemic index foods prioritised to control blood sugar.');
+  if (h.includes('thyroid'))      alerts.push('🦋 Thyroid — selenium-rich foods included for thyroid support.');
+  if (h.includes('hypertension')) alerts.push('❤️ Hypertension — low sodium, potassium-rich foods selected.');
+
+  if (alerts.length) {
+    alertWrap.style.paddingTop = 'var(--space-md)';
+    alertWrap.innerHTML = alerts.map(a => `<div class="health-alert">${a}</div>`).join('');
+  }
+
+  // Build meal order
+  const wt = profile.workoutTime || 'morning';
+  const order = wt === 'morning'
+    ? [['Morning Detox',plan.detox],['Pre Workout',plan.preWorkout],['Breakfast',plan.breakfast],['Lunch',plan.lunch],['Post Workout',plan.postWorkout],['Evening Snack',plan.snack],['Dinner',plan.dinner]]
+    : [['Morning Detox',plan.detox],['Breakfast',plan.breakfast],['Lunch',plan.lunch],['Pre Workout',plan.preWorkout],['Post Workout',plan.postWorkout],['Evening Snack',plan.snack],['Dinner',plan.dinner]];
+
+  const timeline = document.getElementById('timeline');
+  timeline.innerHTML = '';
+
+  order.forEach(([label, meal]) => {
+    if (!meal) return;
+
+    let healthTag = '';
+    if (h.includes('iron') && meal.iron)             healthTag = '<span class="health-tag ht-iron">🩸 Iron Rich</span>';
+    else if (h.includes('pcos') && meal.pcos)        healthTag = '<span class="health-tag ht-pcos">🌸 PCOS Friendly</span>';
+    else if (h.includes('diabetes') && meal.diabetes)healthTag = '<span class="health-tag ht-diabetes">🩺 Low GI</span>';
+    else if (h.includes('hypertension') && meal.hypertension) healthTag = '<span class="health-tag ht-hyper">❤️ Low Sodium</span>';
+
+    let cardClass = 'meal-card';
+    if (MAIN_MEALS.includes(label)) cardClass += ' main';
+    if (h.includes('iron') && meal.iron)             cardClass = 'meal-card iron-food';
+    else if (h.includes('pcos') && meal.pcos)        cardClass = 'meal-card pcos-food';
+    else if (h.includes('diabetes') && meal.diabetes)cardClass = 'meal-card diabetes-food';
+
+    // Alternatives from same category
+    const catMap = { 'Breakfast': SmartFit.DIET_DATA.breakfast, 'Lunch': SmartFit.DIET_DATA.lunch, 'Dinner': SmartFit.DIET_DATA.dinner };
+    const altArr = catMap[label] || [];
+    const alts   = altArr.filter(m => m.name !== meal.name).slice(0, 3);
+    const altHtml = alts.length ? `
+      <div class="alt-section">
+        <div class="alt-label">Swap with:</div>
+        <div class="alt-chips">
+          ${alts.map(m => `<button class="alt-chip" onclick="alert('${m.name} — ${m.cal} kcal\\n${m.reason}')">${m.name} · ${m.cal} kcal</button>`).join('')}
+        </div>
+      </div>` : '';
+
+    const hasRecipe = !!RECIPES[meal.name];
+
+    const card = document.createElement('div');
+    card.className = cardClass;
+    card.innerHTML = `
+      <div class="time-col">
+        <div class="time-bubble">${ICONS[label] || '🍽️'}</div>
+        <div class="time-label">${label}</div>
+      </div>
+      <div class="meal-body">
+        <h3>${meal.name}</h3>
+        <p class="meal-reason">${meal.reason || ''}</p>
+        <div class="macro-row">
+          <span class="macro-chip mc-cal">${meal.cal} kcal</span>
+          ${meal.p ? `<span class="macro-chip mc-pro">${meal.p}g protein</span>` : ''}
+          ${meal.c ? `<span class="macro-chip mc-car">${meal.c}g carbs</span>`  : ''}
+          ${meal.f ? `<span class="macro-chip mc-fat">${meal.f}g fat</span>`    : ''}
+        </div>
+        ${healthTag}
+        ${altHtml}
+      </div>
+      ${hasRecipe ? `<button class="recipe-btn" onclick="openRecipe('${meal.name}')">📖 Recipe</button>` : ''}
+    `;
+    timeline.appendChild(card);
+  });
+
+  // Summary
+  const t = plan.totals || {};
+  set('sumCal',  t.cal     || 0);
+  set('sumPro',  (t.protein||0) + 'g');
+  set('sumCarb', (t.carbs  ||0) + 'g');
+  set('sumFat',  (t.fat    ||0) + 'g');
+  set('sumCalTgt',  'Target: ' + analysis.calories + ' kcal');
+  set('sumProTgt',  'Target: ' + analysis.protein  + 'g');
+  set('sumCarbTgt', 'Target: ' + analysis.carbs    + 'g');
+  set('sumFatTgt',  'Target: ' + analysis.fat      + 'g');
+
+  const diff = analysis.calories - (t.cal || 0);
+  let note = diff > 150
+    ? `⚠️ You are ${diff} kcal under target. Add a snack like roasted chana or makhana.`
+    : diff < -150
+    ? `⚠️ You are ${Math.abs(diff)} kcal over target. Reduce dinner portion slightly.`
+    : '✅ On target! Great nutrition balance today. Keep it up.';
+  set('sumNote', note);
+}
+
+function regenerate() {
+  localStorage.removeItem('sf_diet_plan');
+  localStorage.removeItem('sf_diet_date');
+  plan = SmartFit.generateDietPlan(profile, analysis);
+  render();
+}
+
+function openRecipe(name) {
+  const r = RECIPES[name];
+  if (!r) { alert('Recipe coming soon for ' + name + '!'); return; }
+  document.getElementById('recipeContent').innerHTML = `
+    <h2 style="margin-bottom:.3rem">📖 ${name}</h2>
+    <div class="recipe-meta">
+      <span class="recipe-meta-item">⏱ ${r.time}</span>
+      <span class="recipe-meta-item">📊 ${r.diff}</span>
+    </div>
+    <strong style="font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;opacity:.6">Steps</strong>
+    <ol class="recipe-steps" style="margin:.5rem 0 var(--space-sm)">
+      ${r.steps.map(s => `<li>${s}</li>`).join('')}
+    </ol>
+    <div class="recipe-tip">💡 ${r.tip}</div>
+    <br>
+    <a class="yt-link" href="https://www.youtube.com/results?search_query=${encodeURIComponent(name+' recipe')}" target="_blank" rel="noopener">▶ Watch on YouTube</a>
+  `;
+  document.getElementById('recipeModal').classList.add('open');
+}
+
+function closeRecipe() {
+  document.getElementById('recipeModal').classList.remove('open');
+}
+document.getElementById('recipeModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('recipeModal')) closeRecipe();
+});
+
+function set(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+</script>
+</body>
+</html>

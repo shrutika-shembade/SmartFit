@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get Started — SmartFit</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.profile-hero {
+  background: linear-gradient(135deg, var(--forest-dark), var(--forest-mid));
+  padding: var(--space-xl) 0 var(--space-lg);
+  text-align: center;
+}
+.profile-hero h1, .profile-hero p { color:var(--cream); }
+.profile-hero p { opacity:.8; margin-top:.4rem; }
+
+.profile-form-section { padding: var(--space-xl) 0 var(--space-2xl); }
+.profile-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: var(--space-lg);
+  align-items: start;
+}
+.form-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+}
+.form-note { text-align:center; font-size:.78rem; opacity:.55; margin-top:var(--space-sm); }
+
+/* Live preview */
+.preview-card {
+  background: var(--forest-dark);
+  color: var(--cream);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  position: sticky;
+  top: 80px;
+}
+.preview-card h4 { color:var(--cream); margin-bottom:var(--space-sm); font-size:1rem; }
+.preview-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .65rem 0;
+  border-bottom: 1px solid rgba(254,250,224,.12);
+}
+.preview-stat:last-of-type { border-bottom:none; }
+.preview-label { font-size:.82rem; opacity:.7; }
+.preview-value { font-weight:700; color:var(--turmeric-light); font-family:var(--font-mono); font-size:.9rem; }
+.preview-hint  { font-size:.75rem; opacity:.55; margin-top:var(--space-sm); }
+
+@media(max-width:900px) {
+  .profile-layout { grid-template-columns:1fr; }
+  .preview-card { position:static; order:-1; }
+}
+</style>
+</head>
+<body data-page="profile">
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo"><span class="logo-mark">🌿</span> SmartFit</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="profile.html" class="active">Get Started</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="diet.html">Diet Plan</a></li>
+      <li><a href="workout.html">Workout</a></li>
+      <li><a href="grocery.html">Grocery</a></li>
+      <li><a href="skincare.html">Skin &amp; Hair</a></li>
+    </ul>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+  </div>
+</nav>
+
+<header class="profile-hero">
+  <div class="container">
+    <p class="eyebrow" style="color:var(--turmeric-light)">Complete Health Assessment</p>
+    <h1>Tell us about yourself</h1>
+    <p>Fill this once. SmartFit plans your diet, workout, grocery and grooming automatically.</p>
+  </div>
+</header>
+
+<section class="profile-form-section">
+  <div class="container profile-layout">
+
+    <!-- FORM -->
+    <form id="profileForm" class="form-card">
+
+      <!-- Step 1: Body -->
+      <div class="form-section-title"><span class="num">01</span> Body Details</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="age">Age</label>
+          <input type="number" id="age" name="age" placeholder="e.g. 21" min="10" max="100" required>
+        </div>
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <select id="gender" name="gender" required>
+            <option value="" disabled selected>Select</option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="height">Height (cm)</label>
+          <input type="number" id="height" name="height" placeholder="e.g. 156" min="100" max="250" required>
+        </div>
+        <div class="form-group">
+          <label for="weight">Weight (kg)</label>
+          <input type="number" id="weight" name="weight" placeholder="e.g. 55" min="20" max="250" step="0.1" required>
+        </div>
+      </div>
+
+      <!-- Step 2: Lifestyle -->
+      <div class="form-section-title"><span class="num">02</span> Lifestyle</div>
+            <div class="form-group">
+        <label for="occupation">Occupation</label>
+        <select id="occupation" name="occupation" required>
+          <option value="" disabled selected>Select your occupation</option>
+          <option value="Student">Student</option>
+          <option value="OfficeWorker">Office Worker</option>
+          <option value="GymPerson">Gym Person</option>
+          <option value="Housewife">Housewife</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="lifeStage">Life Stage</label>
+        <select id="lifeStage" name="lifeStage" required>
+          <option value="" disabled selected>Select life stage</option>
+          <option value="Teen">Teen</option>
+          <option value="Adult">Adult</option>
+          <option value="OlderAdult">Older Adult</option>
+          <option value="Pregnancy">Pregnancy</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Activity Level</label>
+        <div class="radio-group">
+          <div class="radio-pill"><input type="radio" id="ls1" name="lifestyle" value="Sedentary"><label for="ls1">Sedentary</label></div>
+          <div class="radio-pill"><input type="radio" id="ls2" name="lifestyle" value="Moderate" checked><label for="ls2">Moderate</label></div>
+          <div class="radio-pill"><input type="radio" id="ls3" name="lifestyle" value="Active"><label for="ls3">Active</label></div>
+          <div class="radio-pill"><input type="radio" id="ls4" name="lifestyle" value="VeryActive"><label for="ls4">Very Active</label></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="workingHours">Working Hours / Day</label>
+          <input type="number" id="workingHours" name="workingHours" placeholder="e.g. 8" min="0" max="20">
+        </div>
+        <div class="form-group">
+          <label for="workoutTime">Workout Time</label>
+          <select id="workoutTime" name="workoutTime">
+            <option value="morning">🌅 Morning</option>
+            <option value="evening">🌙 Evening</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="sleepTime">Sleep Time (24hr, e.g. 23)</label>
+          <input type="number" id="sleepTime" name="sleepTime" placeholder="23" min="0" max="23">
+        </div>
+        <div class="form-group">
+          <label for="wakeTime">Wake Time (24hr, e.g. 7)</label>
+          <input type="number" id="wakeTime" name="wakeTime" placeholder="7" min="0" max="23">
+        </div>
+      </div>
+
+      <!-- Step 3: Diet -->
+      <div class="form-section-title"><span class="num">03</span> Diet &amp; Region</div>
+      <div class="form-group">
+        <label>Food Preference</label>
+        <div class="radio-group">
+          <div class="radio-pill"><input type="radio" id="fp1" name="foodPreference" value="Veg"><label for="fp1">🥦 Veg</label></div>
+          <div class="radio-pill"><input type="radio" id="fp2" name="foodPreference" value="NonVeg" checked><label for="fp2">🍗 Non-Veg</label></div>
+          <div class="radio-pill"><input type="radio" id="fp3" name="foodPreference" value="Vegan"><label for="fp3">🌱 Vegan</label></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="region">Region</label>
+          <select id="region" name="region" required>
+            <option value="" disabled selected>Select region</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="NorthIndia">North India</option>
+            <option value="SouthIndia">South India</option>
+            <option value="All">Other / Pan-India</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="budget">Budget</label>
+          <select id="budget" name="budget" required>
+            <option value="low">💚 Low</option>
+            <option value="medium" selected>💛 Medium</option>
+            <option value="high">💰 High</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Step 4: Health -->
+      <div class="form-section-title"><span class="num">04</span> Health Issues</div>
+      <p style="font-size:.84rem;opacity:.65;margin-bottom:.8rem">Select all that apply. Leave blank if none.</p>
+      <div class="checkbox-group">
+        <label class="check-pill"><input type="checkbox" name="healthIssues" value="iron"> 🩸 Iron Deficiency</label>
+        <label class="check-pill"><input type="checkbox" name="healthIssues" value="diabetes"> 🩺 Diabetes</label>
+        <label class="check-pill"><input type="checkbox" name="healthIssues" value="pcos"> 🌸 PCOS</label>
+        <label class="check-pill"><input type="checkbox" name="healthIssues" value="thyroid"> 🦋 Thyroid</label>
+        <label class="check-pill"><input type="checkbox" name="healthIssues" value="hypertension"> ❤️ Hypertension</label>
+        <label class="check-pill"><input type="checkbox" name="healthIssues" value="obesity"> ⚖️ Obesity</label>
+      </div>
+
+      <div class="form-group" style="margin-top:var(--space-md)">
+        <label for="allergy">Allergies (optional)</label>
+        <input type="text" id="allergy" name="allergy" placeholder="e.g. peanuts, dairy, gluten">
+      </div>
+
+      <div class="form-group">
+        <label for="skinType">Skin Type (for skin care plan)</label>
+        <select id="skinType" name="skinType">
+          <option value="oily" selected>Oily</option>
+          <option value="dry">Dry</option>
+          <option value="combination">Combination</option>
+          <option value="normal">Normal</option>
+          <option value="sensitive">Sensitive</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:var(--space-md);font-size:1rem;padding:1rem">
+        🚀 Generate My Complete Plan
+      </button>
+      <p class="form-note">📱 Your data stays on your device only. Never uploaded anywhere.</p>
+
+    </form>
+
+    <!-- LIVE PREVIEW -->
+    <aside class="preview-card">
+      <h4>📊 Live Analysis</h4>
+      <div class="preview-stat">
+        <span class="preview-label">BMI</span>
+        <span class="preview-value" id="prevBMI">—</span>
+      </div>
+      <div class="preview-stat">
+        <span class="preview-label">Category</span>
+        <span class="preview-value" id="prevCat">—</span>
+      </div>
+      <div class="preview-stat">
+        <span class="preview-label">Goal</span>
+        <span class="preview-value" id="prevGoal">—</span>
+      </div>
+      <div class="preview-stat">
+        <span class="preview-label">Calories/day</span>
+        <span class="preview-value" id="prevCal">—</span>
+      </div>
+      <div class="preview-stat">
+        <span class="preview-label">Protein/day</span>
+        <span class="preview-value" id="prevPro">—</span>
+      </div>
+      <div class="preview-stat">
+        <span class="preview-label">Ideal Weight</span>
+        <span class="preview-value" id="prevIdeal">—</span>
+      </div>
+      <div class="preview-stat">
+        <span class="preview-label">Body Fat %</span>
+        <span class="preview-value" id="prevBF">—</span>
+      </div>
+      <div class="preview-stat">
+        <span class="preview-label">Water/day</span>
+        <span class="preview-value" id="prevWater">—</span>
+      </div>
+      <p class="preview-hint">Fill height, weight, age &amp; gender to see live analysis.</p>
+    </aside>
+
+  </div>
+</section>
+
+<!-- FOOTER injected by main.js -->
+
+<script src="js/smartfit-data.js"></script>
+<script src="js/main.js"></script>
+<script src="js/profile.js"></script>
+</body>
+</html>

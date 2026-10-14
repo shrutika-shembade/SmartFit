@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skin &amp; Hair Care — SmartFit</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/skincare.css">
+</head>
+<body data-page="skincare">
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-mark">🌿</span> SmartFit
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="profile.html">Get Started</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="diet.html">Diet Plan</a></li>
+      <li><a href="workout.html">Workout</a></li>
+      <li><a href="grocery.html">Grocery</a></li>
+      <li><a href="skincare.html" class="active">Skin &amp; Hair</a></li>
+    </ul>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+  </div>
+</nav>
+
+<header class="care-header">
+  <div class="container">
+    <p class="eyebrow">Personal Care</p>
+    <h1>Skin &amp; Hair Care</h1>
+    <p class="care-sub">Routines matched to your SmartFit profile — skin type, budget and gender.</p>
+  </div>
+</header>
+
+<!-- Profile summary (read from SmartFit profile, not re-entered) -->
+<section class="tab-section" style="padding-bottom:0">
+  <div class="container">
+    <div class="care-selector-card" id="profileSummaryCard">
+      <p style="opacity:.6;font-size:.85rem">Loading your profile...</p>
+    </div>
+  </div>
+</section>
+
+<!-- Tab switcher -->
+<section class="tab-section" style="padding-top:var(--space-sm)">
+  <div class="container">
+    <div class="tab-switcher">
+      <button class="tab-btn active" data-tab="skin">🧴 Skin Care</button>
+      <button class="tab-btn" data-tab="hair">💇 Hair Care</button>
+      <button class="tab-btn" data-tab="general">🧼 General</button>
+    </div>
+  </div>
+</section>
+
+<!-- SKIN CARE TAB -->
+<section class="care-tab-content" id="skin">
+  <div class="container">
+
+    <div class="care-selector-card">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="skinType">Skin Type</label>
+          <select id="skinType">
+            <option value="oily">Oily</option>
+            <option value="dry">Dry</option>
+            <option value="normal">Normal</option>
+            <option value="combination">Combination</option>
+            <option value="sensitive">Sensitive</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="skinBudget">Budget</label>
+          <select id="skinBudget">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+      </div>
+      <p style="font-size:.78rem;opacity:.6;margin-top:-.4rem">
+        Pre-filled from your SmartFit profile. Change either to preview a different routine (not saved to your profile).
+      </p>
+    </div>
+
+    <div class="routine-grid">
+
+      <div class="routine-card">
+        <div class="routine-head morning">
+          <span class="routine-icon">☀️</span>
+          <h3>Morning Routine</h3>
+          <span class="routine-time">5-7 min</span>
+        </div>
+        <ol class="routine-steps" id="morningRoutineList"></ol>
+      </div>
+
+      <div class="routine-card">
+        <div class="routine-head night">
+          <span class="routine-icon">🌙</span>
+          <h3>Night Routine</h3>
+          <span class="routine-time">10 min</span>
+        </div>
+        <ol class="routine-steps" id="nightRoutineList"></ol>
+      </div>
+
+    </div>
+
+    <div class="info-row">
+      <div class="info-card" id="homeRemedyCard">
+        <h4>🥗 Home Care &amp; Diet</h4>
+      </div>
+      <div class="info-card">
+        <h4>⚠️ Common Mistakes</h4>
+        <ul class="mistake-list">
+          <li>Skipping sunscreen — often the biggest gap in a routine</li>
+          <li>Over-washing your face</li>
+          <li>Not removing makeup/sunscreen before bed</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Men's grooming: shown only when profile.gender === 'Male' -->
+    <div id="mensGroomingWrap" style="display:none;margin-top:var(--space-lg)">
+      <h2 style="margin-bottom:var(--space-sm)">🪒 Men's Grooming</h2>
+      <div class="routine-grid">
+        <div class="routine-card">
+          <div class="routine-head morning">
+            <span class="routine-icon">🧔</span>
+            <h3>Beard &amp; Shaving Care</h3>
+            <span class="routine-time">as needed</span>
+          </div>
+          <ol class="routine-steps" id="beardRoutineList"></ol>
+        </div>
+        <div class="routine-card">
+          <div class="routine-head night">
+            <span class="routine-icon">✂️</span>
+            <h3>Hair Grooming</h3>
+            <span class="routine-time">daily</span>
+          </div>
+          <ol class="routine-steps" id="mensHairRoutineList"></ol>
+        </div>
+      </div>
+    </div>
+
+    <p class="care-sub" style="margin-top:var(--space-md);font-size:.8rem">
+      This is general wellness guidance, not medical advice. For persistent skin concerns, please consult a qualified dermatologist.
+    </p>
+
+  </div>
+</section>
+
+<!-- HAIR CARE TAB -->
+<section class="care-tab-content hidden" id="hair">
+  <div class="container">
+
+    <div class="care-selector-card">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="hairType">Hair Type</label>
+          <select id="hairType">
+            <option value="straight">Straight</option>
+            <option value="wavy">Wavy</option>
+            <option value="curly">Curly</option>
+            <option value="coily">Coily</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="hairIssue">Hair/Scalp Concern</label>
+          <select id="hairIssue">
+            <option value="none">Normal/Healthy</option>
+            <option value="dry">Dry Hair</option>
+            <option value="oily">Oily Scalp</option>
+            <option value="dandruff">Dandruff</option>
+            <option value="hairfall">Hair Fall Concern</option>
+            <option value="frizzy">Frizzy Hair</option>
+          </select>
+        </div>
+      </div>
+      <p style="font-size:.78rem;opacity:.6;margin-top:-.4rem">
+        Budget is reused from the Skin Care tab above.
+      </p>
+    </div>
+
+    <div class="routine-grid">
+      <div class="routine-card">
+        <div class="routine-head morning">
+          <span class="routine-icon">🪔</span>
+          <h3>Oiling Routine</h3>
+          <span class="routine-time">2-3x/week</span>
+        </div>
+        <ol class="routine-steps" id="hairOilList"></ol>
+      </div>
+
+      <div class="routine-card">
+        <div class="routine-head night">
+          <span class="routine-icon">🧴</span>
+          <h3>Wash Routine</h3>
+          <span class="routine-time" id="hairWashFreq">3x/week</span>
+        </div>
+        <ol class="routine-steps" id="hairWashList"></ol>
+      </div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-card">
+        <h4>🎯 Concern-Specific Care</h4>
+        <p id="hairIssueText">Select a concern above to see targeted care.</p>
+      </div>
+      <div class="info-card">
+        <h4>📅 Weekly Schedule</h4>
+        <div class="week-schedule">
+          <span>Mon: Oil</span>
+          <span>Tue: Wash</span>
+          <span>Wed: Light Oil</span>
+          <span>Thu: Mask</span>
+          <span>Fri: Oil</span>
+          <span>Sat: Wash</span>
+          <span>Sun: Rest</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- GENERAL GROOMING TAB -->
+<section class="care-tab-content hidden" id="general">
+  <div class="container">
+    <div class="routine-card">
+      <div class="routine-head morning">
+        <span class="routine-icon">🧼</span>
+        <h3>Daily Hygiene &amp; Grooming</h3>
+        <span class="routine-time">unisex</span>
+      </div>
+      <ol class="routine-steps">
+        <li><span class="step-num">1</span><div><strong>Hydration</strong><p>2.5–3L water daily supports skin and hair health.</p></div></li>
+        <li><span class="step-num">2</span><div><strong>Sleep</strong><p>7–9 hours supports natural skin repair — most repair happens overnight.</p></div></li>
+        <li><span class="step-num">3</span><div><strong>Sun protection</strong><p>Reapply sunscreen if outdoors for extended periods, regardless of skin type or gender.</p></div></li>
+        <li><span class="step-num">4</span><div><strong>Clean contact surfaces</strong><p>Change pillowcases weekly; clean phone screens regularly.</p></div></li>
+        <li><span class="step-num">5</span><div><strong>Nutrition</strong><p>Vitamin C (amla, orange), Omega-3 (walnuts) and zinc-rich foods may support skin and hair health.</p></div></li>
+      </ol>
+    </div>
+    <p class="care-sub" style="margin-top:var(--space-md);font-size:.8rem">
+      General wellness guidance only — not a substitute for professional medical or dermatological advice.
+    </p>
+  </div>
+</section>
+
+<script src="js/smartfit-data.js"></script>
+<script src="js/main.js"></script>
+<script src="js/effects.js"></script>
+<script src="js/skincare.js"></script>
+</body>
+</html>

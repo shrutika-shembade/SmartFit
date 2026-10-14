@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — SmartFit</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+
+/* ===================================================
+   DASHBOARD STYLES - Complete
+=================================================== */
+
+/* Header */
+.dash-header {
+  background: linear-gradient(135deg, var(--forest-dark) 0%, var(--forest-mid) 100%);
+  padding: var(--space-lg) 0;
+  color: var(--cream);
+}
+.dash-header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+.dash-greeting p {
+  color: var(--cream);
+  opacity: .75;
+  font-size: .9rem;
+  margin-bottom: .3rem;
+}
+.dash-greeting h1 {
+  color: var(--cream);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+}
+
+/* BMI Chip */
+.bmi-chip {
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: var(--radius-lg);
+  padding: .9rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  backdrop-filter: blur(10px);
+}
+.bmi-chip-label {
+  font-size: .72rem;
+  opacity: .7;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--cream);
+}
+.bmi-chip-value {
+  font-family: var(--font-mono);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--turmeric-light);
+  line-height: 1;
+}
+.bmi-chip-cat {
+  font-size: .72rem;
+  font-weight: 700;
+  padding: .25rem .7rem;
+  border-radius: 99px;
+  background: var(--forest-dark);
+  color: var(--cream);
+}
+
+/* Stat cards */
+.stats-section { padding: var(--space-lg) 0 0; }
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-sm);
+}
+.stat-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 1.2rem var(--space-md);
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+  transition: transform .25s, box-shadow .25s;
+}
+.stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card); }
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+.stat-card.cal::after   { background: var(--coral); }
+.stat-card.water::after { background: #2196F3; }
+.stat-card.steps::after { background: var(--turmeric); }
+.stat-card.sleep::after { background: var(--forest-light); }
+
+.stat-icon { font-size: 1.6rem; margin-bottom: .4rem; }
+.stat-val {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--forest-dark);
+  display: block;
+}
+.stat-label { font-size: .78rem; opacity: .6; margin: .2rem 0 .7rem; display: block; }
+.stat-bar { height: 5px; background: var(--cream-deep); border-radius: 99px; overflow: hidden; }
+.stat-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  width: 0;
+  transition: width 1.2s cubic-bezier(.4,0,.2,1) .4s;
+}
+
+/* Analysis row */
+.analysis-row {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: .5rem;
+  margin-top: var(--space-sm);
+}
+.analysis-card {
+  background: var(--white);
+  border-radius: var(--radius-sm);
+  padding: .8rem .6rem;
+  text-align: center;
+  box-shadow: var(--shadow-soft);
+}
+.analysis-val {
+  font-family: var(--font-mono);
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--forest-dark);
+}
+.analysis-lbl { font-size: .62rem; opacity: .55; margin-top: .15rem; }
+
+/* Main grid */
+.dash-main { padding: var(--space-lg) 0 var(--space-2xl); }
+.main-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: var(--space-md);
+}
+.left-col, .right-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Panel */
+.panel {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-soft);
+}
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--cream-deep);
+}
+.panel-head h3 { font-size: 1rem; margin: 0; }
+.panel-link {
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--forest-mid);
+  text-decoration: none;
+}
+.panel-link:hover { text-decoration: underline; }
+.panel-head-summary {
+  text-align: right;
+  font-size: .74rem;
+  line-height: 1.5;
+}
+.panel-head-summary .sum-target { opacity: .55; }
+.panel-head-summary .sum-eaten  { font-weight: 700; color: var(--forest-dark); }
+
+/* Meals */
+.meal-list { list-style: none; }
+.meal-item {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  padding: .6rem 0;
+  border-bottom: 1px solid var(--cream-deep);
+  transition: background .15s;
+}
+.meal-item:last-child { border-bottom: none; }
+.meal-item:hover { background: var(--cream-deep); margin: 0 -.5rem; padding-left: .5rem; padding-right: .5rem; border-radius: var(--radius-sm); }
+.meal-check {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--cream-deep);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .8rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all .2s;
+  user-select: none;
+}
+.meal-item.done .meal-check {
+  background: var(--forest-dark);
+  color: var(--cream);
+}
+.meal-info { flex: 1; min-width: 0; }
+.meal-time { font-size: .68rem; opacity: .55; }
+.meal-name { font-weight: 600; font-size: .9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.meal-cal  { font-family: var(--font-mono); font-size: .78rem; color: var(--forest-mid); white-space: nowrap; }
+
+/* Nutrition note */
+.cal-note {
+  margin-top: .6rem;
+  padding: .6rem .8rem;
+  background: var(--cream-deep);
+  border-radius: var(--radius-sm);
+  font-size: .82rem;
+  line-height: 1.5;
+}
+
+/* Water */
+.water-circles {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: .5rem 0;
+}
+.water-glass {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 2px solid rgba(27,67,50,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem;
+  cursor: pointer;
+  transition: all .2s;
+  background: var(--cream-deep);
+  user-select: none;
+}
+.water-glass.filled {
+  background: #2196F3;
+  border-color: #1565C0;
+  color: white;
+}
+.water-glass:hover { transform: scale(1.12); }
+.water-count { font-size: .82rem; opacity: .65; }
+
+/* Weight chart */
+.weight-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 85px;
+  padding: 0 2px;
+  margin: .6rem 0 .4rem;
+}
+.w-bar {
+  flex: 1;
+  background: var(--forest-light);
+  border-radius: 3px 3px 0 0;
+  min-height: 8%;
+  cursor: pointer;
+  transition: background .2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+.w-bar:hover  { background: var(--turmeric); }
+.w-bar.today  { background: var(--forest-dark); }
+.weight-meta  { font-size: .82rem; opacity: .65; }
+
+/* Action buttons */
+.action-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .5rem;
+  margin-top: .6rem;
+}
+.action-btn {
+  background: var(--cream-deep);
+  border: 1px solid rgba(27,67,50,.12);
+  border-radius: var(--radius-sm);
+  padding: .6rem;
+  font-family: var(--font-body);
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  color: var(--ink);
+}
+.action-btn:hover { background: var(--forest-dark); color: var(--cream); }
+
+/* Reminders */
+.reminder-strip {
+  background: linear-gradient(135deg, var(--forest-dark), var(--forest-mid));
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  color: var(--cream);
+}
+.reminder-strip h3 { color: var(--cream); font-size: 1rem; margin-bottom: .6rem; }
+.reminder-list { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+.reminder-item {
+  background: rgba(255,255,255,.1);
+  padding: .4rem .8rem;
+  border-radius: var(--radius-sm);
+  font-size: .8rem;
+}
+
+/* Quick links */
+.quick-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .5rem;
+}
+.quick-btn {
+  background: var(--cream-deep);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: .8rem .6rem;
+  text-align: center;
+  text-decoration: none;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: .82rem;
+  cursor: pointer;
+  transition: all .2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .3rem;
+  font-family: var(--font-body);
+}
+.quick-btn span { font-size: 1.3rem; }
+.quick-btn:hover { background: var(--forest-dark); color: var(--cream); transform: translateY(-2px); }
+
+/* Achievements */
+.achieve-strip { display: flex; gap: .5rem; flex-wrap: wrap; }
+.badge-item {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .3rem .8rem;
+  border-radius: 99px;
+  font-size: .78rem;
+  font-weight: 600;
+}
+.badge-item.earned { background: var(--cream-deep); color: var(--ink); }
+.badge-item.locked { background: #f0f0f0; color: #999; font-style: italic; }
+
+/* Responsive */
+@media (max-width: 1000px) {
+  .stat-grid    { grid-template-columns: repeat(2, 1fr); }
+  .analysis-row { grid-template-columns: repeat(4, 1fr); }
+  .main-grid    { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .stat-grid    { grid-template-columns: repeat(2, 1fr); }
+  .analysis-row { grid-template-columns: repeat(2, 1fr); }
+  .bmi-chip     { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body data-page="dashboard">
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo"><span class="logo-mark">🌿</span> SmartFit</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="diet.html">Diet Plan</a></li>
+      <li><a href="workout.html">Workout</a></li>
+      <li><a href="grocery.html">Grocery</a></li>
+      <li><a href="skincare.html">Skin &amp; Hair</a></li>
+    </ul>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<header class="dash-header">
+  <div class="container dash-header-inner">
+    <div class="dash-greeting">
+      <p id="dashDate">Loading...</p>
+      <h1 id="dashGreet">Welcome back! 👋</h1>
+    </div>
+    <div class="bmi-chip">
+      <div>
+        <div class="bmi-chip-label">BMI</div>
+        <div class="bmi-chip-value" id="dashBMI">--</div>
+      </div>
+      <span class="bmi-chip-cat" id="dashCat">--</span>
+    </div>
+  </div>
+</header>
+
+<!-- STAT CARDS -->
+<section class="stats-section">
+  <div class="container">
+
+    <div class="stat-grid">
+      <!-- Calories -->
+      <div class="stat-card cal">
+        <div class="stat-icon">🔥</div>
+        <span class="stat-val" id="calVal">--</span>
+        <span class="stat-label">Daily Calorie Target</span>
+        <div class="stat-bar">
+          <div class="stat-bar-fill" id="calBar" style="background:var(--coral)"></div>
+        </div>
+      </div>
+
+      <!-- Water -->
+      <div class="stat-card water">
+        <div class="stat-icon">💧</div>
+        <span class="stat-val" id="waterVal">--</span>
+        <span class="stat-label">Water Goal (glasses)</span>
+        <div class="stat-bar">
+          <div class="stat-bar-fill" id="waterBar" style="background:#2196F3"></div>
+        </div>
+      </div>
+
+      <!-- Steps -->
+      <div class="stat-card steps">
+        <div class="stat-icon">👣</div>
+        <span class="stat-val" id="stepsVal">--</span>
+        <span class="stat-label">Steps Today / 8000 goal</span>
+        <div class="stat-bar">
+          <div class="stat-bar-fill" id="stepsBar" style="background:var(--turmeric)"></div>
+        </div>
+      </div>
+
+      <!-- Sleep -->
+      <div class="stat-card sleep">
+        <div class="stat-icon">😴</div>
+        <span class="stat-val" id="sleepVal">--</span>
+        <span class="stat-label">Sleep Duration</span>
+        <div class="stat-bar">
+          <div class="stat-bar-fill" id="sleepBar" style="background:var(--forest-light)"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Body Analysis Row -->
+    <div class="analysis-row">
+      <div class="analysis-card">
+        <div class="analysis-val" id="abmr">--</div>
+        <div class="analysis-lbl">BMR</div>
+      </div>
+      <div class="analysis-card">
+        <div class="analysis-val" id="abodyFat">--</div>
+        <div class="analysis-lbl">Body Fat</div>
+      </div>
+      <div class="analysis-card">
+        <div class="analysis-val" id="aideal">--</div>
+        <div class="analysis-lbl">Ideal Wt</div>
+      </div>
+      <div class="analysis-card">
+        <div class="analysis-val" id="albm">--</div>
+        <div class="analysis-lbl">Lean Mass</div>
+      </div>
+      <div class="analysis-card">
+        <div class="analysis-val" id="aprotein">--</div>
+        <div class="analysis-lbl">Protein/day</div>
+      </div>
+      <div class="analysis-card">
+        <div class="analysis-val" id="acarbs">--</div>
+        <div class="analysis-lbl">Carbs/day</div>
+      </div>
+      <div class="analysis-card">
+        <div class="analysis-val" id="afat">--</div>
+        <div class="analysis-lbl">Fat/day</div>
+      </div>
+      <div class="analysis-card">
+        <div class="analysis-val" id="agoal">--</div>
+        <div class="analysis-lbl">Your Goal</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<section class="dash-main">
+  <div class="container">
+    <div class="main-grid">
+
+      <!-- LEFT COLUMN -->
+      <div class="left-col">
+
+        <!-- Today's Meals -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>🍽️ Today's Meals</h3>
+            <div class="panel-head-summary">
+              <div class="sum-target" id="sumCalTarget">Target: -- kcal</div>
+              <div class="sum-eaten"><span id="sumCal">-- kcal eaten</span> · <span id="sumPro">--g protein</span></div>
+            </div>
+          </div>
+          <ul class="meal-list" id="mealList">
+            <li style="opacity:.5;font-size:.9rem;padding:.6rem 0">Loading your meal plan...</li>
+          </ul>
+          <div class="cal-note" id="calNote">Loading nutrition summary...</div>
+          <p style="text-align:right;margin-top:.4rem">
+            <a href="diet.html" class="panel-link">View full plan →</a>
+          </p>
+        </div>
+
+        <!-- Water Tracker -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>💧 Water Tracker</h3>
+            <span class="water-count" id="waterCount">0 / 0 glasses</span>
+          </div>
+          <div class="water-circles" id="waterCircles">
+            <p style="opacity:.5;font-size:.85rem">Loading...</p>
+          </div>
+          <p style="font-size:.75rem;opacity:.55;margin-top:.4rem">
+            Tap each glass as you drink throughout the day
+          </p>
+        </div>
+
+        <!-- Achievements -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>🏆 Achievements</h3>
+            <span class="badge badge-low" id="earnedCount">0 earned</span>
+          </div>
+          <div class="achieve-strip" id="achieveStrip">
+            <p style="opacity:.5;font-size:.85rem">Loading...</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="right-col">
+
+        <!-- Weight Progress -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>⚖️ Weight Progress</h3>
+            <span id="weightStatus" class="badge badge-medium">--</span>
+          </div>
+          <div class="weight-chart" id="weightChart">
+            <p style="opacity:.5;font-size:.85rem;padding:.5rem 0;text-align:center;width:100%">Loading...</p>
+          </div>
+          <p class="weight-meta" id="weightMeta">No data yet</p>
+          <div class="action-btns">
+            <button class="action-btn" onclick="logWeight()">⚖️ Log Weight</button>
+            <button class="action-btn" onclick="logSteps()">👣 Log Steps</button>
+          </div>
+        </div>
+
+        <!-- Reminders -->
+        <div class="reminder-strip">
+          <h3>⏰ Today's Schedule</h3>
+          <ul class="reminder-list" id="reminderList">
+            <li class="reminder-item">Loading reminders...</li>
+          </ul>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="panel">
+          <div class="panel-head"><h3>⚡ Quick Actions</h3></div>
+          <div class="quick-grid">
+            <a href="diet.html"     class="quick-btn"><span>🍽️</span>Diet Plan</a>
+            <a href="workout.html"  class="quick-btn"><span>💪</span>Workout</a>
+            <a href="grocery.html"  class="quick-btn"><span>🛒</span>Grocery</a>
+            <a href="skincare.html" class="quick-btn"><span>🧴</span>Skin Care</a>
+            <button onclick="logWeight()" class="quick-btn"><span>⚖️</span>Log Weight</button>
+            <a href="profile.html"  class="quick-btn"><span>⚙️</span>Edit Profile</a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER injected by main.js -->
+
+<script src="js/smartfit-data.js"></script>
+<script src="js/main.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>
